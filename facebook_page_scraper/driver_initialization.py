@@ -4,6 +4,8 @@ from seleniumwire import webdriver
 # to add capabilities for chrome and firefox, import their Options with different aliases
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from fake_headers import Headers
+import undetected_chromedriver as uc
 # import webdriver for downloading respective driver for the browser
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
@@ -19,16 +21,36 @@ logger.addHandler(ch)
 
 class Initializer:
 
-    def __init__(self, browser_name, proxy=None, headless=True):
+    def __init__(self, browser_name, proxy=None, headless=True, profile=None, user_agent=None):
         self.browser_name = browser_name
         self.proxy = proxy
         self.headless = headless
+        self.profile = profile
+        self.user_agent = user_agent
 
     def set_properties(self, browser_option):
         """adds capabilities to the driver"""
+
+        prefs = {
+          "translate_whitelists": {"ru":"en"},
+          "translate":{"enabled":"true"}
+        }
+
         if self.headless:
             browser_option.add_argument(
                 '--headless')  # runs browser in headless mode
+
+        if self.profile and self.browser_name.lower() == "undetected-chromedriver":
+            logger.info("Loading Profile from {}".format(self.profile))
+            browser_option.add_argument(
+                "user-data-dir={}".format(self.profile))
+            browser_option.add_argument(
+                "--profile-directory={}".format('Default'))
+            browser_option.add_experimental_option("prefs", prefs)
+
+        if self.user_agent:
+            browser_option.add_argument('--user-agent={}'.format(self.user_agent))
+
         browser_option.add_argument('--no-sandbox')
         browser_option.add_argument("--disable-dev-shm-usage")
         browser_option.add_argument('--ignore-certificate-errors')
@@ -36,6 +58,7 @@ class Initializer:
         browser_option.add_argument('--log-level=3')
         browser_option.add_argument('--disable-notifications')
         browser_option.add_argument('--disable-popup-blocking')
+        browser_option.add_argument("--lang=en");
         return browser_option
 
     def set_driver_for_browser(self, browser_name):
@@ -70,6 +93,13 @@ class Initializer:
 
             # automatically installs geckodriver and initialize it and returns the instance
             return webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=self.set_properties(browser_option))
+
+        elif browser_name.lower() == "undetected-chromedriver":
+            browser_option = uc.ChromeOptions()
+            browser_option.headless = False
+
+            return uc.Chrome(use_subprocess=True, options=self.set_properties(browser_option))
+
         else:
             # if browser_name is not chrome neither firefox than raise an exception
             raise Exception("Browser not supported!")

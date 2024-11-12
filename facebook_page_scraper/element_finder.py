@@ -210,6 +210,8 @@ class Finder:
         replace_html_tags_regex = "<[^<>]+>"
         message = re.sub(replace_html_tags_regex, "", post_message.group(0))
 
+        print(text)
+
         return message
 
     @staticmethod

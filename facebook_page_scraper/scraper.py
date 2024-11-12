@@ -38,7 +38,7 @@ class Facebook_scraper:
     # on each iteration __close_after_retry is called to check if retry have turned to 0
     # if it returns true,it will break the loop. After coming out of loop,driver will be closed and it will return post whatever was found
 
-    def __init__(self, page_or_group_name, posts_count=10, browser="chrome", proxy=None, 
+    def __init__(self, page_or_group_name, posts_count=10, browser="chrome", proxy=None, profile=None, user_agent=None,
                  timeout=600, headless=True, isGroup=False, username=None, password=None):
         self.page_or_group_name = page_or_group_name
         self.posts_count = int(posts_count)
@@ -47,6 +47,8 @@ class Facebook_scraper:
         self.browser = browser
         self.__driver = ''
         self.proxy = proxy
+        self.profile = profile
+        self.user_agent = user_agent
         self.__layout = ''
         self.timeout = timeout
         self.headless = headless
@@ -60,7 +62,7 @@ class Facebook_scraper:
     def __start_driver(self):
         """changes the class member __driver value to driver on call"""
         self.__driver = Initializer(
-            self.browser, self.proxy, self.headless).init()
+            self.browser, self.proxy, self.headless, self.profile, self.user_agent).init()
 
     def __handle_popup(self, layout):
         # while scrolling, wait for login popup to show, it can be skipped by clicking "Not Now" button
@@ -218,7 +220,6 @@ class Facebook_scraper:
                     print("no post_url, skipping")
                     continue
 
-
                 # Split the URL on the '?' character, to detach the referer or uneeded query info
                 parts = post_url.split('?')
                 # The first part of the list is the URL up to the '?'
@@ -232,7 +233,7 @@ class Facebook_scraper:
 
                 post_content = Finder._Finder__find_content(
                     post, self.__driver, self.__layout)
-                # print("comments: " + post_content)
+                #print("comments: " + post_content)
                 
                 # NOTE below is  additional fields to scrape, all of which have not been thoroughly tested for groups
                 if not self.isGroup:

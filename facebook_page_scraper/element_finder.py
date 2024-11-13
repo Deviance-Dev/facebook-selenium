@@ -352,6 +352,42 @@ class Finder:
             return timestamp
 
     @staticmethod
+    def __find_user_name(post):
+        """finds video of the facebook post using selenium's webdriver's method"""
+        try:
+            # if video is found in the post, than create a video URL by concatenating post's id with page_name
+            video_element = post.find_elements(By.TAG_NAME, "video")
+            srcs = []
+            for video in video_element:
+                srcs.append(video.get_attribute("src"))
+        except NoSuchElementException:
+            video = []
+            pass
+        except Exception as ex:
+            video = []
+            logger.exception("Error at find_video_url method : {}".format(ex))
+
+        return srcs
+
+    @staticmethod
+    def __find_user_url(post):
+        """finds video of the facebook post using selenium's webdriver's method"""
+        try:
+            # if video is found in the post, than create a video URL by concatenating post's id with page_name
+            video_element = post.find_elements(By.TAG_NAME, "video")
+            srcs = []
+            for video in video_element:
+                srcs.append(video.get_attribute("src"))
+        except NoSuchElementException:
+            video = []
+            pass
+        except Exception as ex:
+            video = []
+            logger.exception("Error at find_video_url method : {}".format(ex))
+
+        return srcs
+
+    @staticmethod
     def __find_video_url(post):
         """finds video of the facebook post using selenium's webdriver's method"""
         try:

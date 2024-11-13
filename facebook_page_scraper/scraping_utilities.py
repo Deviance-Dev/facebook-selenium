@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 from datetime import datetime as dt
 from datetime import timedelta
+import dateparser
 
 from selenium.webdriver.common.by import By
 
@@ -124,28 +125,16 @@ class Scraping_utilities:
     @staticmethod
     def __convert_to_iso(t):
         past_date = "Failed to fetch!"
-        if 'h' in t.lower() or "hr" in t.lower() or "hrs" in t.lower():
-            hours_to_subract = re.sub("\D", '', t)
-            # print(f"{hours_to_subract} subtracting hours\n")
-            past_date = datetime.today() - timedelta(hours=int(hours_to_subract))
-            # print(past_date.timestamp())
-            return past_date.isoformat()
+        if 'ч' in t.lower() or "hr" in t.lower() or "hrs" in t.lower():
+            past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'})
 
-        if 'm' in t.lower() or "min" in t.lower() or "mins" in t.lower():
-            minutes_to_subtract = re.sub("\D", '', t)
-            past_date = datetime.now() - timedelta(minutes=int(minutes_to_subtract))
-            return past_date.isoformat()
+        if 'м' in t.lower() or "мин" in t.lower() or "mins" in t.lower():
+            past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'})
 
-        if 's' in t.lower():
-            seconds_to_subtract = re.sub("\D", '', t)
-            past_date = datetime.now() - timedelta(seconds=int(seconds_to_subtract))
-            return past_date.isoformat()
+        if 'с' in t.lower():
+            past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'})
 
-        elif 'd' in t.lower() or "ds" in t.lower():
-            days_to_subtract = re.sub("\D", '', t)
-            # print(f"{days_to_subtract} subtracting days\n")
-            past_date = datetime.today() - timedelta(days=int(days_to_subtract))
-            # print(past_date.timestamp())
-            return past_date.isoformat()
+        elif 'д' in t.lower() or "дн" in t.lower():
+            past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'})
         # print(f"time is : {t}")
-        return past_date
+        return past_date.isoformat()

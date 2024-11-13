@@ -122,6 +122,26 @@ class Facebook_scraper:
 
         return json.dumps(self.__data_dict, ensure_ascii=False)
 
+    def edit_language(self):
+        # call the __start_driver and override class member __driver to webdriver's instance
+        self.__start_driver()
+        starting_time = time.time()
+        # navigate to URL
+        self.__driver.get('https://facebook.com/language')
+
+        Finder._Finder__accept_cookies(self.__driver)
+        self.__layout = Finder._Finder__detect_ui(self.__driver)
+        # sometimes we get popup that says "your request couldn't be processed", however
+        # posts are loading in background if popup is closed, so call this method in case if it pops up.
+        Utilities._Utilities__close_error_popup(self.__driver)
+
+        Utilities._Utilities__click_language_select(self.__driver)
+
+        # close the browser window after job is done.
+        Utilities._Utilities__close_driver(self.__driver)
+
+        return {'status': True, 'message': 'Language Edited'}
+
     def __json_to_csv(self, filename, json_data, directory):
 
         os.chdir(directory)  # change working directory to given directory

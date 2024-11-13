@@ -11,6 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.action_chains import ActionChains
 
 logger = logging.getLogger(__name__)
 format = logging.Formatter(
@@ -178,12 +179,41 @@ class Utilities:
             logger.exception("Error at click_see_more method : {}".format(ex))
 
     @staticmethod
+    def __click_language_select(driver):
+        ### Выбираем английский язык
+        try:
+          language_div = driver.find_element(
+             By.XPATH, '//div[contains(@aria-label, "English")]')
+          ActionChains(driver).click(language_div).perform()
+          logger.info('Language Selected')
+
+          time.sleep(15)
+          
+          english_div = driver.find_element(
+            By.XPATH, '//*[contains(text(), "Русский")]')
+          ActionChains(driver).click(english_div).perform()
+
+        except NoSuchElementException:
+            # Если не нашел - то значит все таки английский язык уже выбран
+            pass
+        except AttributeError:
+            pass
+        except IndexError:
+            pass
+        except Exception as ex:
+            logger.exception("Error at Language Select : {}".format(ex))
+
+    @staticmethod
     def __close_cookie_consent_modern_layout(driver):
         # To avoid the cookie consent prompt
         try:
           allow_span = driver.find_element(
              By.XPATH, '//div[contains(@aria-label, "Allow")]/../following-sibling::div')
           allow_span.click()
+
+        except NoSuchElementException:
+            # Если не нашел - то значит все таки английский язык уже выбран
+            pass
         except Exception as ex:
             #if not found, that's fine silently just log thing do not stop
             logger.info('The Cookie Consent Prompt was not found!: ', ex)

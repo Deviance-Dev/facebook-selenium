@@ -43,22 +43,22 @@ class Initializer:
         if self.profile and self.browser_name.lower() == "undetected-chromedriver":
             logger.info("Loading Profile from {}".format(self.profile))
             browser_option.add_argument(
-                "user-data-dir={}".format(self.profile))
+                'user-data-dir={}'.format(self.profile))
             browser_option.add_argument(
-                "--profile-directory={}".format('Default'))
+                '--profile-directory={}'.format('Default'))
             browser_option.add_experimental_option("prefs", prefs)
 
         if self.user_agent:
             browser_option.add_argument('--user-agent={}'.format(self.user_agent))
 
         browser_option.add_argument('--no-sandbox')
-        browser_option.add_argument("--disable-dev-shm-usage")
+        browser_option.add_argument('--disable-dev-shm-usage')
         browser_option.add_argument('--ignore-certificate-errors')
         browser_option.add_argument('--disable-gpu')
         browser_option.add_argument('--log-level=3')
         browser_option.add_argument('--disable-notifications')
         browser_option.add_argument('--disable-popup-blocking')
-        browser_option.add_argument("--lang=en");
+        browser_option.add_argument('--lang=en-US');
         return browser_option
 
     def set_driver_for_browser(self, browser_name):

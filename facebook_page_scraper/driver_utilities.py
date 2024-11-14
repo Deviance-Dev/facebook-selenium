@@ -136,7 +136,7 @@ class Utilities:
                 return True
             elif layout == "new":
                 WebDriverWait(driver, timeout).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "[aria-posinset]")))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "[data-type]")))
                 print("new layout loaded")
 
                 return True
@@ -180,6 +180,31 @@ class Utilities:
 
     @staticmethod
     def __click_language_select(driver):
+        ### Выбираем английский язык
+        try:
+          language_div = driver.find_element(
+             By.XPATH, '//div[contains(@aria-label, "English")]')
+          ActionChains(driver).click(language_div).perform()
+          logger.info('Language Selected')
+
+          time.sleep(15)
+          
+          english_div = driver.find_element(
+            By.XPATH, '//*[contains(text(), "Русский")]')
+          ActionChains(driver).click(english_div).perform()
+
+        except NoSuchElementException:
+            # Если не нашел - то значит все таки английский язык уже выбран
+            pass
+        except AttributeError:
+            pass
+        except IndexError:
+            pass
+        except Exception as ex:
+            logger.exception("Error at Language Select : {}".format(ex))
+
+    @staticmethod
+    def __click_to_open_post(driver):
         ### Выбираем английский язык
         try:
           language_div = driver.find_element(

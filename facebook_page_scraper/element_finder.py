@@ -445,7 +445,7 @@ class Finder:
             elif layout == "new":
                 # all_posts = driver.find_elements(By.CSS_SELECTOR, "div[role='feed'] > div")
                 # different query selectors depending on if we are scraping a FB page or group
-                all_posts = driver.find_elements(By.CSS_SELECTOR, "div[role='feed'] > div" if isGroup else 'div[role="article"]')
+                all_posts = driver.find_elements(By.CSS_SELECTOR, "div[role='feed'] > div" if isGroup else "//span[@style='color:#8a8d91;']")
             return all_posts
         except NoSuchElementException:
             logger.error("Cannot find any posts! Exiting!")

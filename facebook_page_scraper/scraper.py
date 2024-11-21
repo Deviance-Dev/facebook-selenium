@@ -247,10 +247,8 @@ class Facebook_scraper:
 
 
                 # finds name depending on if this facebook site is a page or group (we pass a post obj or a webDriver)
-                name = Finder._Finder__find_name(
-                    post if self.isGroup else self.__driver, self.__layout)  # find name element for page or for each post if this is used for group pages
+                name, user_url = Finder._Finder__find_name(post, self.__layout)  # find name element for page or for each post if this is used for group pages
                 
-
                 post_content = Finder._Finder__find_content(
                     post, self.__driver, self.__layout)
                 #print("comments: " + post_content)
@@ -280,28 +278,25 @@ class Facebook_scraper:
                     # if Like aria-label is in the list, than extract it and extract numbers from that text
 
                     likes = Scraping_utilities._Scraping_utilities__find_reaction_by_text(
-                        l, "Like")
-
+                        l, "Нравится")
                     # if Love aria-label is in the list, than extract it and extract numbers from that text
                     loves = Scraping_utilities._Scraping_utilities__find_reaction_by_text(
-                        l, "Love")
-
+                        l, "Супер")
                     # if Wow aria-label is in the list, than extract it and extract numbers from that text
                     wow = Scraping_utilities._Scraping_utilities__find_reaction_by_text(
-                        l, "Wow")
-
+                        l, "Ух ты")
                     # if Care aria-label is in the list, than extract it and extract numbers from that text
                     cares = Scraping_utilities._Scraping_utilities__find_reaction_by_text(
-                        l, "Care")
+                        l, "Мы вместе")
                     # if Sad aria-label is in the list, than extract it and extract numbers from that text
                     sad = Scraping_utilities._Scraping_utilities__find_reaction_by_text(
-                        l, "Sad")
+                        l, "Сочувствую")
                     # if Angry aria-label is in the list, than extract it and extract numbers from that text
                     angry = Scraping_utilities._Scraping_utilities__find_reaction_by_text(
-                        l, "Angry")
+                        l, "Возмутительно")
                     # if Haha aria-label is in the list, than extract it and extract numbers from that text
                     haha = Scraping_utilities._Scraping_utilities__find_reaction_by_text(
-                        l, "Haha")
+                        l, "Ха-ха")
 
                     # converting all reactions to numbers
                     # e,g reactions may contain counts like "5k","5m", so converting them to actual number
@@ -345,11 +340,13 @@ class Facebook_scraper:
 
                 self.__data_dict[status] = {
                     "name": name,
+                    "user_url": user_url,
                     "content": post_content,
                     "images": image,
                     "post_url": post_url,
                     # NOTE only include the following fields if scraping a page, not tested for groups yet
                     **({"shares": shares} if not self.isGroup else {}),
+                    **({"likes": int(likes)} if not self.isGroup else {}),
                     **({"reactions": reactions} if not self.isGroup else {}),
                     **({"reaction_count": total_reaction_count} if not self.isGroup else {}),
                     **({"comments": comments} if not self.isGroup else {}),

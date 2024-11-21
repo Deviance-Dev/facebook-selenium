@@ -134,12 +134,12 @@ class Finder:
                 shares = Scraping_utilities._Scraping_utilities__extract_numbers(shares)
             elif layout == "new":
                 element = post.find_element(
-                    By.XPATH, './/div/span/div/span[contains(text(), " share")]'
+                    By.XPATH, './/span[contains(text(), "Поделились:")]'
                 )
                 shares = "0"
                 if not element:
                   return shares
-                return element.text.replace(' shares', '').replace(' share', '')
+                return element.text.replace('Поделились: ', '').replace(' share', '')
             return shares
         except NoSuchElementException:
             # if element is not present that means there wasn't any shares
@@ -157,7 +157,7 @@ class Finder:
         try:
             # find element that have attribute aria-label as 'See who reacted to this
             reactions_all = post.find_element(
-                By.CSS_SELECTOR, '[aria-label="See who reacted to this"]'
+                By.CSS_SELECTOR, '[aria-label="Посмотрите, кто отреагировал на это"]'
             )
         except NoSuchElementException:
             reactions_all = ""
@@ -180,12 +180,12 @@ class Finder:
                 )
             elif layout == "new":
                 element = post.find_element(
-                    By.XPATH, './/div/span/div/span[contains(text(), " comment")]'
+                    By.XPATH, './/span[contains(text(), "коммент")]'
                 )
                 comments = 0
                 if element is None:
                     return comments
-                return element.text.replace(' comments', '').replace(' comment', '')
+                return element.text.replace(' комментарий', '').replace(' комментария', '').replace(' комментариев', '')
         except NoSuchElementException:
             comments = 0
         except Exception as ex:
@@ -335,13 +335,9 @@ class Finder:
                     print("TIMESTAMP: " + str(timestamp))
                 elif not isGroup:
                     aria_label_value = link_element.get_attribute("aria-label")
-                    timestamp = (
-                        parse(aria_label_value).isoformat()
-                        if len(aria_label_value) > 5
-                        else Scraping_utilities._Scraping_utilities__convert_to_iso(
+                    timestamp = Scraping_utilities._Scraping_utilities__convert_to_iso(
                             aria_label_value
                         )
-                    )
                 return timestamp
 
         except TypeError:
@@ -350,42 +346,6 @@ class Finder:
             logger.exception("Error at find_posted_time method : {}".format(ex))
             timestamp = ""
             return timestamp
-
-    @staticmethod
-    def __find_user_name(post):
-        """finds video of the facebook post using selenium's webdriver's method"""
-        try:
-            # if video is found in the post, than create a video URL by concatenating post's id with page_name
-            video_element = post.find_elements(By.TAG_NAME, "video")
-            srcs = []
-            for video in video_element:
-                srcs.append(video.get_attribute("src"))
-        except NoSuchElementException:
-            video = []
-            pass
-        except Exception as ex:
-            video = []
-            logger.exception("Error at find_video_url method : {}".format(ex))
-
-        return srcs
-
-    @staticmethod
-    def __find_user_url(post):
-        """finds video of the facebook post using selenium's webdriver's method"""
-        try:
-            # if video is found in the post, than create a video URL by concatenating post's id with page_name
-            video_element = post.find_elements(By.TAG_NAME, "video")
-            srcs = []
-            for video in video_element:
-                srcs.append(video.get_attribute("src"))
-        except NoSuchElementException:
-            video = []
-            pass
-        except Exception as ex:
-            video = []
-            logger.exception("Error at find_video_url method : {}".format(ex))
-
-        return srcs
 
     @staticmethod
     def __find_video_url(post):
@@ -468,11 +428,13 @@ class Finder:
                     "textContent"
             )
             elif layout == "new":
-                name = driverOrPost.find_element(By.TAG_NAME, "strong").get_attribute(
-                    "textContent"
-                )
+                elem = driverOrPost.find_element(By.CSS_SELECTOR, 'div[data-ad-rendering-role="profile_name"] > h2 > span > a')
+                name = elem.text
+                user_url = elem.get_attribute("href")
+                parts = user_url.split('?')
+                user_url = parts[0]
 
-            return name
+            return (name, user_url)
         except Exception as ex:
             logger.exception("Error at __find_name method : {}".format(ex))
 

@@ -5,8 +5,8 @@ from selectolax.parser import HTMLParser
 import json
 import sys
 
-from .driver_utilities import Utilities
-from .scraping_utilities import Scraping_utilities
+import logging
+import re
 
 logger = logging.getLogger(__name__)
 format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -17,7 +17,7 @@ logger.addHandler(ch)
 class RequestHandler:
 
     @staticmethod
-    def __fetch_html(self, url: str) -> str:
+    def __fetch_html(url: str) -> str:
         """
         Fetches the HTML content from the given URL.
 
@@ -31,7 +31,7 @@ class RequestHandler:
             SystemExit: If there's an error fetching the page.
         """
 
-        headers = {
+        head_req = {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
             "accept-language": "en-US,en;q=0.9",
             "cache-control": "no-cache",
@@ -49,7 +49,7 @@ class RequestHandler:
         }
 
         try:
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=head_req)
             response.raise_for_status()
             return response.text
         except Exception as e:
@@ -57,7 +57,7 @@ class RequestHandler:
             sys.exit(1)
 
     @staticmethod
-    def __parse_json_from_html(self, html_content: str, key_to_find: str) -> dict:
+    def __parse_json_from_html(html_content: str, key_to_find: str) -> dict:
         """
         Parses JSON data from HTML by extracting the relevant script block.
 

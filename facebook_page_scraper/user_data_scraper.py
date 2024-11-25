@@ -18,7 +18,7 @@ logger.addHandler(ch)
 class UserDataScraper:
 
     @staticmethod
-    def __extract_general_info(self, json_data: dict) -> Dict[str, Optional[str]]:
+    def __extract_general_info(json_data: dict) -> Dict[str, Optional[str]]:
         """
         Extracts general page information (name, URL, profile picture, likes, followers).
 
@@ -81,7 +81,7 @@ class UserDataScraper:
             return general_info
 
     @staticmethod
-    def __extract_profile_info(self, json_data: dict) -> Dict[str, Optional[str]]:
+    def __extract_profile_info(json_data: dict) -> Dict[str, Optional[str]]:
         """
         Extracts detailed profile information from the parsed JSON data.
 

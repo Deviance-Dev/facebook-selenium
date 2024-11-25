@@ -252,7 +252,7 @@ class Facebook_scraper:
         elif profile_info:
             return profile_info
         else:
-        return None
+            return None
 
     def __find_elements(self):
         """find elements of posts and add them to data_dict"""

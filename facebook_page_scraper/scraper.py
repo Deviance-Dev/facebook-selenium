@@ -9,6 +9,8 @@ from .driver_initialization import Initializer
 from .driver_utilities import Utilities
 from .element_finder import Finder
 from .scraping_utilities import Scraping_utilities
+from .request_handler import RequestHandler
+from .user_data_scraper import UserDataScraper
 
 logger = logging.getLogger(__name__)
 format = logging.Formatter(
@@ -219,6 +221,38 @@ class Facebook_scraper:
         if len(all_posts) == 0:
             # if length of posts is 0,decrement retry by 1
             self.retry -= 1
+
+    def scrape_user_data(self):
+        """
+        Performs the scraping process to retrieve general and profile page information.
+
+        Returns:
+            dict: A combined dictionary with general and profile page information, or None if extraction fails.
+        """
+        html_content = RequestHandler._RequestHandler__fetch_html(self.URL)
+
+        # Parse general information
+        general_info_json = RequestHandler._RequestHandler__parse_json_from_html(
+            html_content, "username_for_profile"
+        )
+        general_info = UserDataScraper._UserDataScraper__extract_general_info(general_info_json)
+
+        # Parse profile information
+        profile_info_json = RequestHandler._RequestHandler__parse_json_from_html(
+            html_content, "profile_tile_items"
+        )
+        profile_info = UserDataScraper._UserDataScraper__extract_profile_info(profile_info_json)
+
+        # Combine both into one dictionary
+        if general_info and profile_info:
+            combined_info = {**general_info, **profile_info}
+            return combined_info
+        elif general_info:
+            return general_info
+        elif profile_info:
+            return profile_info
+        else:
+        return None
 
     def __find_elements(self):
         """find elements of posts and add them to data_dict"""

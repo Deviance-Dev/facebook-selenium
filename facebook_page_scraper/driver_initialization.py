@@ -96,8 +96,7 @@ class Initializer:
 
         elif browser_name.lower() == "undetected-chromedriver":
             browser_option = uc.ChromeOptions()
-            browser_option.headless = False
-
+            
             return uc.Chrome(use_subprocess=True, options=self.set_properties(browser_option))
 
         else:

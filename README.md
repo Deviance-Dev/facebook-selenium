@@ -56,7 +56,7 @@
 <h3 id="sourceInstallation"> Installing from source: </h3>
 
 ```
-git clone https://github.com/shaikhsajid1111/facebook_page_scraper
+git clone [https://github.com/Deviance-Dev/facebook-selenium](https://github.com/Deviance-Dev/facebook-selenium)
 ```
 
 <h4> Inside project's directory </h4>

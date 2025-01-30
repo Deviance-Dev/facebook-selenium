@@ -93,6 +93,7 @@ class Finder:
 
                 links = post.find_elements(By.TAG_NAME, 'a')
                 if links:
+                    print(links)
                     # Initialize variables to store the matching link element and URL
                     matching_link_element = None
                     post_url = None
@@ -100,7 +101,7 @@ class Finder:
                     # Iterate over links to find the first one that matches the criteria
                     for link in links:
                         href = link.get_attribute('href')
-                        if href and '/groups/' in href:
+                        if href and '/posts/' in href:
                             post_url = href  # Store the URL
                             matching_link_element = link  # Store the link element
                             break  # Exit the loop after finding the first match

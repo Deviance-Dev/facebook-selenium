@@ -197,7 +197,10 @@ class Facebook_scraper:
 								logger.warning(e)
 								pass
 
-				time.sleep(30)
+				time.sleep(15)
+
+				# close the browser window after job is done.
+				Utilities._Utilities__close_driver(self.__driver)
 
 				return {'success': True, 'message': "COOKIES UPDATED"}
 
@@ -342,8 +345,9 @@ class Facebook_scraper:
 										
 
 										# extract time
-										posted_time = Finder._Finder__find_posted_time(
-												post, self.__layout, link_element, self.__driver, self.isGroup)
+										# posted_time = Finder._Finder__find_posted_time(
+										# 		post, self.__layout, link_element, self.__driver, self.isGroup)
+										posted_time = 2228
 
 										video = Finder._Finder__find_video_url(post)
 

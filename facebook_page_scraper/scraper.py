@@ -146,60 +146,6 @@ class Facebook_scraper:
 
 				return {'status': True, 'message': 'Language Edited'}
 
-		def __json_to_csv(self, filename, json_data, directory):
-
-				os.chdir(directory)  # change working directory to given directory
-				# headers of the CSV file
-				fieldnames = ['id', 'name', 'shares', 'likes', 'loves', 'wow', 'cares', 'sad', 'angry', 'haha', 'reactions_count', 'comments',
-											'content', 'posted_on', 'video', 'images', 'post_url']
-				# open and start writing to CSV files
-				mode = 'w'
-				if os.path.exists("{}.csv".format(filename)):
-						# if the CSV file already exists then switch to append mode
-						mode = 'a'
-				with open("{}.csv".format(filename), mode, newline='', encoding="utf-8") as data_file:
-						# instantiate DictWriter for writing CSV file
-						writer = csv.DictWriter(data_file, fieldnames=fieldnames)
-						if mode == 'w':
-								# if writing mode is
-								writer.writeheader()  # write headers to CSV file
-						# iterate over entire dictionary, write each posts as a row to CSV file
-						for key in json_data:
-								post = json_data[key]  # For better readability
-								reactions = post.get('reactions', {})  # Default to an empty dict if 'reactions' does not exist
-								row = {
-										'id': key,
-										'name': post.get('name', ''),
-										'shares': post.get('shares', 0),
-										'likes': reactions.get('likes', 0),
-										'loves': reactions.get('loves', 0),
-										'wow': reactions.get('wow', 0),
-										'cares': reactions.get('cares', 0),
-										'sad': reactions.get('sad', 0),
-										'angry': reactions.get('angry', 0),
-										'haha': reactions.get('haha', 0),
-										'reactions_count': post.get('reaction_count', 0),
-										'comments': post.get('comments', ''),
-										'content': post.get('content', ''),
-										'posted_on': post.get('posted_on', ''),
-										'video': post.get('video', ''),
-										'images': " ".join(post.get('images', [])),  # Join images list into a string, defaulting to an empty list
-										'post_url': post.get('post_url', '')
-								}
-								writer.writerow(row)  # write row to CSV file
-
-						data_file.close()  # after writing close the file
-
-		def scrap_to_csv(self, filename, directory=os.getcwd(),):
-				try:
-						data = self.scrap_to_json()  # get the data in JSON format from the same class method
-						# convert it and write to CSV
-						self.__json_to_csv(filename, json.loads(data), directory)
-						return True
-				except Exception as ex:
-						logger.exception('Error at scrap_to_csv : {}'.format(ex))
-						return False
-
 		def __remove_duplicates(self, all_posts):
 				"""takes a list of posts and removes duplicates from it and returns the list"""
 				if len(self.__extracted_post) == 0:  # if self.__extracted_post is empty that means it is first extraction

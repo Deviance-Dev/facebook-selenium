@@ -428,7 +428,7 @@ class Finder:
                     "textContent"
             )
             elif layout == "new":
-                elem = driverOrPost.find_element(By.CSS_SELECTOR, 'div[data-ad-rendering-role="profile_name"] > h2 > span > a')
+                elem = driverOrPost.find_element(By.CSS_SELECTOR, 'div[data-ad-rendering-role="profile_name"] > h2 > span > span > a')
                 name = elem.text
                 user_url = elem.get_attribute("href")
                 parts = user_url.split('?')

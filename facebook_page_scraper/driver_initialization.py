@@ -64,6 +64,7 @@ class Initializer:
     def set_driver_for_browser(self, browser_name):
         """expects browser name and returns a driver instance"""
         logger.setLevel(logging.INFO)
+        
         # if browser is suppose to be chrome
         if browser_name.lower() == "chrome":
             browser_option = ChromeOptions()
@@ -96,7 +97,7 @@ class Initializer:
 
         elif browser_name.lower() == "undetected-chromedriver":
             browser_option = uc.ChromeOptions()
-            
+
             return uc.Chrome(use_subprocess=True, options=self.set_properties(browser_option))
 
         else:

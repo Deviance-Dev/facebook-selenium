@@ -345,9 +345,8 @@ class Facebook_scraper:
 										
 
 										# extract time
-										# posted_time = Finder._Finder__find_posted_time(
-										# 		post, self.__layout, link_element, self.__driver, self.isGroup)
-										posted_time = 2228
+										posted_time = Finder._Finder__find_posted_time(
+												post, self.__layout, link_element, self.__driver, self.isGroup)
 
 										video = Finder._Finder__find_video_url(post)
 

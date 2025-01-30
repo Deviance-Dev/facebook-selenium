@@ -81,9 +81,10 @@ class Finder:
             elif layout == "new":
 
                 link = post.find_element(
-                    By.CSS_SELECTOR, 'span > a[role="link"]' if isGroup else 'span > a[aria-label][role="link"]'
+                    By.CSS_SELECTOR, 'span > a[role="link"]' if isGroup else 'span > span > a[aria-label][role="link"]'
                 )
                 if link is not None:
+                    logger.info("LINK FOUND BLYTA")
                     status_link = link.get_attribute("href")
                     status = Scraping_utilities._Scraping_utilities__extract_id_from_link(
                         status_link
@@ -101,7 +102,7 @@ class Finder:
                     # Iterate over links to find the first one that matches the criteria
                     for link in links:
                         href = link.get_attribute('href')
-                        if href and '/posts/' in href:
+                        if href and '/groups/' in href:
                             post_url = href  # Store the URL
                             matching_link_element = link  # Store the link element
                             break  # Exit the loop after finding the first match

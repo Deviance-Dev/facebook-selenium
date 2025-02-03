@@ -137,6 +137,8 @@ class Facebook_scraper:
 				# navigate to URL
 				self.__driver.get('https://facebook.com/language')
 
+				logger.info(f"PAGE TITLE: {self.__driver.title}")
+
 				Finder._Finder__accept_cookies(self.__driver)
 				self.__layout = Finder._Finder__detect_ui(self.__driver)
 				# sometimes we get popup that says "your request couldn't be processed", however
@@ -230,6 +232,7 @@ class Facebook_scraper:
 						return None
 
 		def __find_elements(self):
+				logger.setLevel(logging.DEBUG)
 				"""find elements of posts and add them to data_dict"""
 				all_posts = Finder._Finder__find_all_posts(
 						self.__driver, self.__layout, self.isGroup)  # find all posts
@@ -246,7 +249,7 @@ class Facebook_scraper:
 								status, post_url, link_element = Finder._Finder__find_status(
 										post, self.__layout, self.isGroup)
 								if post_url is None:
-										print("no post_url, skipping")
+										print("no post_url, skipping LOL")
 										continue
 
 								# Split the URL on the '?' character, to detach the referer or uneeded query info

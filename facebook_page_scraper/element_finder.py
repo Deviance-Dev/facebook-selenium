@@ -62,6 +62,7 @@ class Finder:
     @staticmethod
     def __find_status(post, layout, isGroup):
         """finds URL of the post, then extracts link from that URL and returns it"""
+        logger.setLevel(logging.INFO)
         try:
             link = None
             status_link = None
@@ -79,12 +80,27 @@ class Finder:
                     status_link
                 )
             elif layout == "new":
-
                 link = post.find_element(
                     By.CSS_SELECTOR, 'span > a[role="link"]' if isGroup else 'span > div > span > span > span > a[aria-label][role="link"]'
                 )
+                logger.info("NOT FOUND 32")
+                print("FF 32")
+
                 if link is not None:
-                    logger.info("LINK FOUND BLYTA")
+                    status_link = link.get_attribute("href")
+                    status = Scraping_utilities._Scraping_utilities__extract_id_from_link(
+                        status_link
+                    )
+                    if not isGroup and status_link and status: #early exit for non group
+                        return (status, status_link, link)
+
+                link = post.find_element(
+                    By.CSS_SELECTOR, 'span > a[role="link"]' if isGroup else 'div > a[aria-label][role="link"]'
+                )
+
+                if link is not None:
+                    logger.info("REELS")
+                    print("REELS")
                     status_link = link.get_attribute("href")
                     status = Scraping_utilities._Scraping_utilities__extract_id_from_link(
                         status_link

@@ -80,33 +80,38 @@ class Finder:
                     status_link
                 )
             elif layout == "new":
-                link = post.find_element(
-                    By.CSS_SELECTOR, 'span > a[role="link"]' if isGroup else 'span > div > span > span > span > a[aria-label][role="link"]'
-                )
-                logger.info("NOT FOUND 32")
-                print("FF 32")
-
-                if link is not None:
-                    status_link = link.get_attribute("href")
-                    status = Scraping_utilities._Scraping_utilities__extract_id_from_link(
-                        status_link
+                try:
+                    link = post.find_element(
+                        By.CSS_SELECTOR, 'span > a[role="link"]' if isGroup else 'span > div > span > span > span > a[aria-label][role="link"]'
                     )
-                    if not isGroup and status_link and status: #early exit for non group
-                        return (status, status_link, link)
 
-                link = post.find_element(
-                    By.CSS_SELECTOR, 'span > a[role="link"]' if isGroup else 'div > a[aria-label][role="link"]'
-                )
+                    if link is not None:
+                        status_link = link.get_attribute("href")
+                        status = Scraping_utilities._Scraping_utilities__extract_id_from_link(
+                            status_link
+                        )
+                        if not isGroup and status_link and status: #early exit for non group
+                            return (status, status_link, link)
+                except:
+                    logger.info("Error at finding url method 1")
+                    pass
 
-                if link is not None:
-                    logger.info("REELS")
-                    print("REELS")
-                    status_link = link.get_attribute("href")
-                    status = Scraping_utilities._Scraping_utilities__extract_id_from_link(
-                        status_link
+                try:
+                    link = post.find_element(
+                        By.CSS_SELECTOR, 'span > a[role="link"]' if isGroup else 'div > a[aria-label][role="link"]'
                     )
-                    if not isGroup and status_link and status: #early exit for non group
-                        return (status, status_link, link)
+
+                    if link is not None:
+                        logger.info("REELS")
+                        status_link = link.get_attribute("href")
+                        status = Scraping_utilities._Scraping_utilities__extract_id_from_link(
+                            status_link
+                        )
+                        if not isGroup and status_link and status: #early exit for non group
+                            return (status, status_link, link)
+                except:
+                    logger.info("Error at finding url method 2")
+                    pass
 
                 links = post.find_elements(By.TAG_NAME, 'a')
                 if links:
@@ -352,12 +357,29 @@ class Finder:
                     timestamp = driver.execute_script(js_script, link_element)
                     print("TIMESTAMP: " + str(timestamp))
                 elif not isGroup:
-                    print(link_element.text)
-                    print(link_element)
-                    aria_label_value = link_element.get_attribute("aria-label")
-                    timestamp = Scraping_utilities._Scraping_utilities__convert_to_iso(
-                            aria_label_value
+                    try:
+                        print(link_element.text)
+                        print(link_element)
+                        aria_label_value = link_element.get_attribute("aria-label")
+                        timestamp = Scraping_utilities._Scraping_utilities__convert_to_iso(
+                                aria_label_value
                         )
+
+                        return timestamp
+                    except:
+                        logger.info("Error at find_posted_time method 1")
+                        pass
+                    
+                    try:
+                        aria_label_value = link_element.get_attribute("aria-label")
+                        timestamp = Scraping_utilities._Scraping_utilities__convert_to_iso(
+                                aria_label_value
+                        )
+                        
+                        return timestamp
+                    except:
+                        logger.info("Error at find_posted_time method 2")
+                        pass
                 return timestamp
 
         except TypeError:
@@ -455,8 +477,21 @@ class Finder:
                 user_url = parts[0]
 
             return (name, user_url)
-        except Exception as ex:
-            logger.exception("Error at __find_name method : {}".format(ex))
+        except:
+            logger.info("Error at finding name method 1")
+            pass
+
+        try:
+            elem = driverOrPost.find_element(By.CSS_SELECTOR, 'span > span > object > a')
+            name = elem.text
+            user_url = elem.get_attribute("href")
+            parts = user_url.split('?')
+            user_url = parts[0]
+
+            return (name, user_url)
+        except:
+            logger.info("Error at finding name method 2")
+            pass
 
     @staticmethod
     def __detect_ui(driver):

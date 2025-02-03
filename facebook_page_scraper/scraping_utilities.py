@@ -124,17 +124,17 @@ class Scraping_utilities:
 
     @staticmethod
     def __convert_to_iso(t):
-        past_date = "Failed to fetch!"
+        past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'}).isoformat()
         if 'ч' in t.lower() or "hr" in t.lower() or "hrs" in t.lower():
-            past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'})
+            past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'}).isoformat()
 
         if 'м' in t.lower() or "мин" in t.lower() or "mins" in t.lower():
-            past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'})
+            past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'}).isoformat()
 
         if 'с' in t.lower():
-            past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'})
+            past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'}).isoformat()
 
-        elif 'д' in t.lower() or "дн" in t.lower():
-            past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'})
+        if 'д' in t.lower() or "дн" in t.lower():
+            past_date = dateparser.parse(t, settings={'TIMEZONE': 'Asia/Tashkent'}).isoformat()
         # print(f"time is : {t}")
-        return past_date.isoformat()
+        return past_date

@@ -81,7 +81,7 @@ class Finder:
             elif layout == "new":
 
                 link = post.find_element(
-                    By.CSS_SELECTOR, 'span > a[role="link"]' if isGroup else 'span > span > a[aria-label][role="link"]'
+                    By.CSS_SELECTOR, 'span > a[role="link"]' if isGroup else 'span > div > span > span > span > a[aria-label][role="link"]'
                 )
                 if link is not None:
                     logger.info("LINK FOUND BLYTA")
@@ -336,6 +336,8 @@ class Finder:
                     timestamp = driver.execute_script(js_script, link_element)
                     print("TIMESTAMP: " + str(timestamp))
                 elif not isGroup:
+                    print(link_element.text)
+                    print(link_element)
                     aria_label_value = link_element.get_attribute("aria-label")
                     timestamp = Scraping_utilities._Scraping_utilities__convert_to_iso(
                             aria_label_value

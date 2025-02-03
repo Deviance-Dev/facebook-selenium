@@ -15,7 +15,7 @@ from .user_data_scraper import UserDataScraper
 
 logger = logging.getLogger(__name__)
 format = logging.Formatter(
-    "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+		"%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 ch = logging.StreamHandler()
 ch.setFormatter(format)
 logger.addHandler(ch)
@@ -91,8 +91,12 @@ class Facebook_scraper:
 				# call the __start_driver and override class member __driver to webdriver's instance
 				self.__start_driver()
 				starting_time = time.time()
+
 				# navigate to URL
 				self.__driver.get(self.URL)
+
+				self.get_cookies()
+
 				# only login if username is provided
 				self.username is not None and Finder._Finder__login(self.__driver, self.username, self.password)
 				Finder._Finder__accept_cookies(self.__driver)
@@ -171,14 +175,7 @@ class Facebook_scraper:
 						self.retry -= 1
 
 		def get_cookies(self):
-				# call the __start_driver and override class member __driver to webdriver's instance
-				self.__start_driver()
-				starting_time = time.time()
-				# navigate to URL
-				self.__driver.get('https://facebook.com')
-
 				current_cookies = self.__driver.get_cookies()
-
 				logger.setLevel(logging.INFO)
 				logger.info(f"CURRENT COOKIES: {current_cookies}")
 
@@ -196,11 +193,7 @@ class Facebook_scraper:
 						except Exception as e:
 								logger.warning(e)
 								pass
-
 				time.sleep(15)
-
-				# close the browser window after job is done.
-				Utilities._Utilities__close_driver(self.__driver)
 
 				return {'success': True, 'message': "COOKIES UPDATED"}
 

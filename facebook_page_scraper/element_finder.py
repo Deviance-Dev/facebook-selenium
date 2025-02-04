@@ -359,7 +359,6 @@ class Finder:
                 elif not isGroup:
                     try:
                         print(link_element.text)
-                        print(link_element)
                         aria_label_value = link_element.get_attribute("aria-label")
                         timestamp = Scraping_utilities._Scraping_utilities__convert_to_iso(
                                 aria_label_value
@@ -371,9 +370,11 @@ class Finder:
                         pass
                     
                     try:
-                        aria_label_value = link_element.get_attribute("aria-label")
+                        dateElement = link_element.find_element(
+                            By.CSS_SELECTOR, 'span > span:nth-child(3)'
+                        )
                         timestamp = Scraping_utilities._Scraping_utilities__convert_to_iso(
-                                aria_label_value
+                                dateElement.text
                         )
                         
                         return timestamp
@@ -485,8 +486,12 @@ class Finder:
             elem = driverOrPost.find_element(By.CSS_SELECTOR, 'span > span > object > a')
             name = elem.text
             user_url = elem.get_attribute("href")
-            parts = user_url.split('?')
-            user_url = parts[0]
+            if "?id=" in user_url:
+                parts = user_url.split('&')
+                user_url = parts[0]
+            else:
+                parts = user_url.split('?')
+                user_url = parts[0]
 
             return (name, user_url)
         except:

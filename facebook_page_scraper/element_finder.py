@@ -391,14 +391,18 @@ class Finder:
             return timestamp
 
     @staticmethod
-    def __find_video_url(post):
+    def __find_video_url(post, status):
         """finds video of the facebook post using selenium's webdriver's method"""
         try:
             # if video is found in the post, than create a video URL by concatenating post's id with page_name
             video_element = post.find_elements(By.TAG_NAME, "video")
             srcs = []
-            for video in video_element:
+            video_screenshots = []
+            for idx, video in enumerate(video_element):
                 srcs.append(video.get_attribute("src"))
+                video.screenshot(f"screenshots/video/{status}_{idx}.png")
+                video_screenshots.append(f"screenshots/video/{status}_{idx}.png")
+
         except NoSuchElementException:
             video = []
             pass
@@ -406,7 +410,7 @@ class Finder:
             video = []
             logger.exception("Error at find_video_url method : {}".format(ex))
 
-        return srcs
+        return (srcs, video_screenshots)
 
     @staticmethod
     def __find_image_url(post, layout):
@@ -463,27 +467,24 @@ class Finder:
     @staticmethod
     def __find_name(driverOrPost, layout):
         """finds name of the facebook page or post using selenium's webdriver's method"""
-        # Attempt to print the outer HTML of the driverOrPost for debugging
-
+        name = None
+        user_url = None
         try:
-            if layout == "old":
-                name = driverOrPost.find_element(By.CSS_SELECTOR, "a._64-f").get_attribute(
-                    "textContent"
-            )
-            elif layout == "new":
-                elem = driverOrPost.find_element(By.CSS_SELECTOR, 'div[data-ad-rendering-role="profile_name"] > h2 > span > span > a')
-                name = elem.text
-                user_url = elem.get_attribute("href")
-                parts = user_url.split('?')
-                user_url = parts[0]
-
-            return (name, user_url)
+            elem = driverOrPost.find_element(By.CSS_SELECTOR, 'div[data-ad-rendering-role="profile_name"] a')
         except:
             logger.info("Error at finding name method 1")
+            elem = None
             pass
+        
+        if elem is None:
+            try:
+                elem = driverOrPost.find_element(By.CSS_SELECTOR, 'span > span > object > a')
+            except:
+                logger.info("Error at finding name method 2")
+                elem = None
+                pass
 
-        try:
-            elem = driverOrPost.find_element(By.CSS_SELECTOR, 'span > span > object > a')
+        if elem is not None:
             name = elem.text
             user_url = elem.get_attribute("href")
             if "?id=" in user_url:
@@ -493,10 +494,7 @@ class Finder:
                 parts = user_url.split('?')
                 user_url = parts[0]
 
-            return (name, user_url)
-        except:
-            logger.info("Error at finding name method 2")
-            pass
+        return (name, user_url)
 
     @staticmethod
     def __detect_ui(driver):

@@ -258,7 +258,10 @@ class Facebook_scraper:
 								post_url = parts[0]
 
 								# finds name depending on if this facebook site is a page or group (we pass a post obj or a webDriver)
-								name, user_url = Finder._Finder__find_name(post, self.__layout)  # find name element for page or for each post if this is used for group pages
+								name, user_url = Finder._Finder__find_name(post, self.__layout)
+								if name is None:
+									logger.exception("No name, skip POST")
+									continue
 								
 								post_content = Finder._Finder__find_content(
 										post, self.__driver, self.__layout)
@@ -343,7 +346,7 @@ class Facebook_scraper:
 										posted_time = Finder._Finder__find_posted_time(
 												post, self.__layout, link_element, self.__driver, self.isGroup)
 
-										video = Finder._Finder__find_video_url(post)
+										video, video_thumbnail = Finder._Finder__find_video_url(post, status)
 
 								image = Finder._Finder__find_image_url(post, self.__layout)
 
@@ -363,6 +366,7 @@ class Facebook_scraper:
 										**({"comments": comments} if not self.isGroup else {}),
 										**({"posted_on": posted_time} if not self.isGroup else {}),
 										**({"video": video} if not self.isGroup else {}),
+										**({"video_thumbnail": video_thumbnail} if not self.isGroup else {}),
 								}
 						except Exception as ex:
 								logger.exception(

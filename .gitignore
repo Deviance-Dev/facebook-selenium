@@ -81,3 +81,4 @@ pythonenv*
 .prof
 
 /tests.py
+/facebook.py
